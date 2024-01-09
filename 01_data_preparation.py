@@ -29,5 +29,5 @@ def filtered_table():
 
 # COMMAND ----------
 
-data = df_label_counts_less_than_50()
+data = filtered_table()
 data.show()

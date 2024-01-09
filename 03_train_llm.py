@@ -1,16 +1,26 @@
 # Databricks notebook source
+# DBTITLE 1,Setup Notebook Parameters
+dbutils.widgets.text("catalog", "hls_healthcare") #catalog, default value hls_healthcare
+dbutils.widgets.text("volume", "hls_dev.radiology_llm") #volume name, default value hls_dev.radiology_llm
+
+# COMMAND ----------
+
+#TODO require cluster type === ??? 
+
+# COMMAND ----------
+
 #install libraries
 !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC USE CATALOG ang_nara_catalog
+# MAGIC USE CATALOG ${catalog}
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC CREATE VOLUME IF NOT EXISTS ang_nara_catalog.rad_llm.results
+# MAGIC CREATE VOLUME IF NOT EXISTS ${volume}
 
 # COMMAND ----------
 
@@ -111,6 +121,7 @@ def load_model(model_name):
 
 # COMMAND ----------
 
+#TODO replace with secrets and require 
 !huggingface-cli login --token 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
 
 # COMMAND ----------
