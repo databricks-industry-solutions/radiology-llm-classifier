@@ -22,6 +22,7 @@ from trl import SFTTrainer
 
 # COMMAND ----------
 
+#TODO replace with secrets and require
 !huggingface-cli login --token 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
 
 # COMMAND ----------
@@ -96,6 +97,7 @@ df_test = pd.read_csv('/Volumes/ang_nara_catalog/rad_llm/clinical_data/test_rad_
 
 # COMMAND ----------
 
+#TODO replace as a SQL UDF 
 prediction = list()
 for index, row in df_test.iterrows():
     prompt = row['clinical_notes']
