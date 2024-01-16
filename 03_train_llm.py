@@ -73,6 +73,9 @@ warmup_ratio = 0.2 #Define training warmup fraction
 group_by_length = True #Group sequences into batches with same length (saves memory and speeds up training considerably)
 save_steps = 800 #Save checkpoint every X updates steps
 logging_steps = 800 #Log every X updates steps
+eval_steps= 800 #Eval steps
+evaluation_strategy = "steps" #Display val loss for every step
+save_strategy = "steps" 
 output_dir = "/Volumes/ang_nara_catalog/rad_llm/results"
 device_map = {"": 0}
 
@@ -122,7 +125,7 @@ def load_model(model_name):
 # COMMAND ----------
 
 #TODO replace with secrets and require 
-!huggingface-cli login --token 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
+!huggingface-cli login --token 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
 
 # COMMAND ----------
 
@@ -131,26 +134,33 @@ model, tokenizer, peft_config = load_model(model_name)
 # COMMAND ----------
 
 df = spark.sql("SELECT * FROM ang_nara_catalog.rad_llm.delta_rad_filtered")
-df = df.toPandas()
 
 # COMMAND ----------
 
-#Generate list of dictionaries 
-dataset_data = [
-    {
-        "instruction": "predict radiology labels for the clinical notes",
-        "clinical_notes": row_dict["input"],
-        "radiology_labels": row_dict["radiology_labels"]
-    }
-    for row_dict in df.to_dict(orient="records")
-]
+from pyspark.sql import Row
+
+# Define a schema for the new DataFrame
+schema = ["instruction", "clinical_notes", "radiology_labels"]
+
+# Create a list of Row objects using the schema
+row_list = [Row(instruction=row["instruction"],
+                clinical_notes=row["input"],
+                radiology_labels=row["radiology_labels"]) 
+            for row in df.collect()]
+
+# Create a new Spark DataFrame from the list of Rows and schema
+df = spark.createDataFrame(row_list, schema=schema)
 
 # COMMAND ----------
 
-#Write dictionary list to a json file
 import json
-with open("/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json", "w") as f:
-   json.dump(dataset_data, f)
+# Convert PySpark DataFrame to a list of dictionaries
+list_of_dicts = df.toJSON().map(lambda x: json.loads(x)).collect()
+
+# Write the list of dictionaries to a JSON file
+output_json_path = "/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json"
+with open(output_json_path, "w") as json_file:
+  json.dump(list_of_dicts, json_file)
 
 # COMMAND ----------
 
@@ -173,12 +183,24 @@ def template_dataset(sample):
     return sample
 
 #Apply prompt template per sample
-dataset = load_dataset("json", data_files="/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json", split="train")
+dataset = load_dataset("json", data_files="/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json")
 
 # Shuffle the dataset
 dataset_shuffled = dataset.shuffle(seed=42)
-dataset = dataset.map(template_dataset, remove_columns=list(dataset.features))
-dataset
+dataset["train"]
+
+# COMMAND ----------
+
+#Split dataset into train and val
+train_val = dataset["train"].train_test_split(
+    test_size=2000, shuffle=True, seed=42
+)
+train_data = (
+    train_val["train"].map(template_dataset)
+)
+val_data = (
+    train_val["test"].map(template_dataset)
+)
 
 # COMMAND ----------
 
@@ -188,7 +210,10 @@ training_arguments = TrainingArguments(
     per_device_train_batch_size=per_device_train_batch_size,
     gradient_accumulation_steps=gradient_accumulation_steps,
     optim=optim,
+    evaluation_strategy = evaluation_strategy,
+    save_strategy = save_strategy,
     save_steps=save_steps,
+    eval_steps=eval_steps,
     logging_steps=logging_steps,
     learning_rate=learning_rate,
     fp16=fp16,
@@ -203,7 +228,8 @@ training_arguments = TrainingArguments(
 
 trainer = SFTTrainer(
     model=model,
-    train_dataset=dataset,
+    train_dataset = train_data,
+    eval_dataset = val_data,
     peft_config=peft_config,
     dataset_text_field="text",
     max_seq_length=max_seq_length,
