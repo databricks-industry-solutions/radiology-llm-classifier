@@ -1,6 +1,7 @@
 # Databricks notebook source
 #install libraries
-!pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7
+!pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
+!pip install -q unstructured["local-inference"]==0.7.4 pillow
 
 # COMMAND ----------
 
@@ -19,11 +20,12 @@ from transformers import (
 )
 from peft import LoraConfig, PeftModel, get_peft_model
 from trl import SFTTrainer
+from guardrail.client import run_metrics
 
 # COMMAND ----------
 
 #TODO replace with secrets and require
-!huggingface-cli login --token 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
+!huggingface-cli login --token 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
 
 # COMMAND ----------
 
@@ -36,6 +38,16 @@ model = AutoModelForCausalLM.from_pretrained("RadiologyLLMs/RadLlama2-7b")
 
 import re
 def trim_llm_output(text):
+    """
+    Trims the given text at the first occurrence of punctuation.
+
+    Parameters:
+    - text (str): The input text to be trimmed.
+
+    Returns:
+    - str: The trimmed text up to the first occurrence of punctuation, or the original text if no punctuation is found.
+    """
+
     # Define a regular expression to match any punctuation
     punctuation_regex = re.compile(r'[.,;!?:()<]+')
 
@@ -53,7 +65,24 @@ def trim_llm_output(text):
 # COMMAND ----------
 
 from transformers import pipeline
-def pred_wrapper(model, tokenizer, prompt, model_id=1, show_metrics=True, temp=0.1, max_length=1):
+def pred_wrapper(model, tokenizer, prompt, model_id=1, temp=0.1, max_length=1, show_metrics=False):
+    """
+    Wrapper function for text generation using a transformer model.
+
+    Args:
+        model (str): The transformer model to use.
+        tokenizer (str): The tokenizer for the specified model.
+        prompt (str): The input prompt for text generation.
+        model_id (int, optional): Identifier for the model. Defaults to 1.
+        show_metrics (bool, optional): Whether to calculate and display evaluation metrics. Defaults to True.
+        temp (float, optional): Temperature parameter for sampling. Defaults to 0.1.
+        max_length (int, optional): Maximum length of generated text. Defaults to 1.
+
+    Returns:
+        tuple or str: If show_metrics is True, returns a tuple containing the generated text and evaluation metrics.
+                      If show_metrics is False, returns only the generated text.
+    """
+    # Create a text generation pipeline using the specified model and tokenizer
     pipe = pipeline(task="text-generation",
                     model=model,
                     tokenizer=tokenizer,
@@ -97,25 +126,41 @@ df_test = pd.read_csv('/Volumes/ang_nara_catalog/rad_llm/clinical_data/test_rad_
 
 # COMMAND ----------
 
-#TODO replace as a SQL UDF 
-prediction = list()
-for index, row in df_test.iterrows():
-    prompt = row['clinical_notes']
-    pred = pred_wrapper(model, tokenizer, prompt, show_metrics=False)
-    prediction.append(pred)
-df_test['prediction'] = prediction
-spark_df_test = spark.createDataFrame(df_test)
+def apply_pred_wrapper_to_df(df, model, tokenizer, show_metics=False):
+    """
+    Apply the pred_wrapper function to each row of a DataFrame.
 
-# COMMAND ----------
+    Parameters:
+    - df (pd.DataFrame): Input DataFrame containing 'clinical_notes' column.
+    - model: The LLM model.
+    - tokenizer: The tokenizer used for processing the input.
+    - show_metrics (bool): Whether to show metrics during prediction.
 
-#drop index column
-spark_df_test = spark_df_test.drop("Unnamed: 0")
+    Returns:
+    - pd.DataFrame: DataFrame with an additional 'prediction' column.
+    """
+    # Create an empty list to store predictions
+    prediction = []
 
-# COMMAND ----------
+    # Iterate over each row of the DataFrame
+    for index, row in df.iterrows():
+        # Extract the 'clinical_notes' value from the current row
+        prompt = row['clinical_notes']
 
-spark_df_test.write.format("delta").mode("overwrite").saveAsTable("ang_nara_catalog.rad_llm.rad_pred_premlflow")
+        # Apply the pred_wrapper function to obtain predictions
+        pred = pred_wrapper(model, tokenizer, prompt, show_metrics=False)
 
-# COMMAND ----------
+        # Append the prediction to the list
+        prediction.append(pred)
 
-# MAGIC %sql
-# MAGIC select * from ang_nara_catalog.rad_llm.rad_pred_premlflow
+    # Add the 'prediction' column to the original DataFrame
+    df['prediction'] = prediction
+
+    return df
+
+# Example usage:
+result_df = apply_pred_wrapper_to_df(df_test, model, tokenizer)
+
+# Display the result
+display(result_df)
+

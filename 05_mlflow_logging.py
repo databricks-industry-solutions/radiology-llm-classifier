@@ -3,12 +3,32 @@ pip install mlflow --upgrade
 
 # COMMAND ----------
 
+#install libraries
+!pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
+!pip install -q unstructured["local-inference"]==0.7.4 pillow
+
+# COMMAND ----------
+
 dbutils.library.restartPython()
 
 # COMMAND ----------
 
 import mlflow
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import os
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    HfArgumentParser,
+    TrainingArguments,
+    pipeline,
+    logging,
+)
+from peft import LoraConfig, PeftModel, get_peft_model
+from trl import SFTTrainer
+from guardrail.client import run_metrics
 
 # COMMAND ----------
 
@@ -23,6 +43,16 @@ model = AutoModelForCausalLM.from_pretrained("RadiologyLLMs/RadLlama2-7b")
 
 import re
 def trim_llm_output(text):
+    """
+    Trims the given text at the first occurrence of punctuation.
+
+    Parameters:
+    - text (str): The input text to be trimmed.
+
+    Returns:
+    - str: The trimmed text up to the first occurrence of punctuation, or the original text if no punctuation is found.
+    """
+
     # Define a regular expression to match any punctuation
     punctuation_regex = re.compile(r'[.,;!?:()<]+')
 
@@ -40,8 +70,24 @@ def trim_llm_output(text):
 # COMMAND ----------
 
 from transformers import pipeline
-def pred_wrapper(model, tokenizer, prompt, model_id=1, show_metrics=True, temp=0.1, max_length=1):
-    # Initialize the pipeline
+def pred_wrapper(model, tokenizer, prompt, model_id=1, temp=0.1, max_length=1, show_metrics=False):
+    """
+    Wrapper function for text generation using a transformer model.
+
+    Args:
+        model (str): The transformer model to use.
+        tokenizer (str): The tokenizer for the specified model.
+        prompt (str): The input prompt for text generation.
+        model_id (int, optional): Identifier for the model. Defaults to 1.
+        show_metrics (bool, optional): Whether to calculate and display evaluation metrics. Defaults to True.
+        temp (float, optional): Temperature parameter for sampling. Defaults to 0.1.
+        max_length (int, optional): Maximum length of generated text. Defaults to 1.
+
+    Returns:
+        tuple or str: If show_metrics is True, returns a tuple containing the generated text and evaluation metrics.
+                      If show_metrics is False, returns only the generated text.
+    """
+    # Create a text generation pipeline using the specified model and tokenizer
     pipe = pipeline(task="text-generation",
                     model=model,
                     tokenizer=tokenizer,
@@ -49,7 +95,6 @@ def pred_wrapper(model, tokenizer, prompt, model_id=1, show_metrics=True, temp=0
                     do_sample=True,
                     temperature=temp)
 
-    # Generate text using the pipeline
     pipe = pipeline(task="text-generation",
                     model=model,
                     tokenizer=tokenizer,
