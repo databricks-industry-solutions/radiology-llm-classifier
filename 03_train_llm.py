@@ -10,7 +10,13 @@ dbutils.widgets.text("volume", "hls_dev.radiology_llm") #volume name, default va
 # COMMAND ----------
 
 #install libraries
-!pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7
+!pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
+!pip install -q unstructured["local-inference"]==0.7.4 pillow
+!pip install pydantic==1.8.2 
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -39,6 +45,7 @@ from transformers import (
 )
 from peft import LoraConfig, PeftModel, get_peft_model
 from trl import SFTTrainer
+from guardrail.client import run_metrics
 
 # COMMAND ----------
 
@@ -125,7 +132,7 @@ def load_model(model_name):
 # COMMAND ----------
 
 #TODO replace with secrets and require 
-!huggingface-cli login --token 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
+!huggingface-cli login --token $HUGGINGFACE_TOKEN
 
 # COMMAND ----------
 
