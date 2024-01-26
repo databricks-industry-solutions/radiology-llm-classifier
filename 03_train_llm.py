@@ -1,7 +1,13 @@
 # Databricks notebook source
+# MAGIC %md # Setup Configs and Libraries
+
+# COMMAND ----------
+
 # DBTITLE 1,Setup Notebook Parameters
 dbutils.widgets.text("catalog", "hls_healthcare") #catalog, default value hls_healthcare
-dbutils.widgets.text("volume", "hls_dev.radiology_llm") #volume name, default value hls_dev.radiology_llm
+dbutils.widgets.text("llm_volume", "hls_dev.radiology_llm") #volume name, default value hls_dev.radiology_llm
+dbutils.widgets.text("volume_output", "/Volumes/hls_healthcare/rad_llm/trained_llm") #why do we need both volume_output and llm_volume? TODO
+dbutils.widgets.text("training_data_tablename", "hls_healthcare.hls_dev.radiology_data_input") 
 
 # COMMAND ----------
 
@@ -9,6 +15,7 @@ dbutils.widgets.text("volume", "hls_dev.radiology_llm") #volume name, default va
 
 # COMMAND ----------
 
+# DBTITLE 1,External Library Dependencies 
 #install libraries
 !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
@@ -30,6 +37,7 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
+# DBTITLE 1,Import libraries 
 #import libraries
 import os
 import torch
@@ -49,6 +57,7 @@ from guardrail.client import run_metrics
 
 # COMMAND ----------
 
+# DBTITLE 1,Set training configs
 #PEFT LORA configurations definitions used for multi-gpu
 local_rank = -1
 per_device_train_batch_size = 4
@@ -62,9 +71,6 @@ lora_alpha = 16
 lora_dropout = 0.1
 lora_r = 64
 max_seq_length = None
-
-# COMMAND ----------
-
 use_4bit = True #enable QLORA
 use_nested_quant = False 
 bnb_4bit_compute_dtype = "float16"
@@ -83,8 +89,54 @@ logging_steps = 800 #Log every X updates steps
 eval_steps= 800 #Eval steps
 evaluation_strategy = "steps" #Display val loss for every step
 save_strategy = "steps" 
-output_dir = "/Volumes/ang_nara_catalog/rad_llm/results"
+output_dir = dbutils.widgets.get("volume_output")
 device_map = {"": 0}
+training_data_tablename = dbutils.widgets.get("training_data_tablename")
+
+# COMMAND ----------
+
+# MAGIC %md # Load Training Data
+
+# COMMAND ----------
+
+import os
+from pyspark.sql.functions import *
+#
+# load handwritten notes from csv file in Github repo
+#
+def load_data(path="/data/12k_handwritten_clinical_notes.csv"):
+  return (spark.read.format("csv")
+          .option("header",True)
+          .load("file:///" + os.getcwd() +  path)
+  )
+#
+# Only use where there exists 50 or more labels
+#   @param default function used to load data from Github repo
+#     - can provide your own load_data() function, or your own filtered_table() function to source data from 
+# 
+#  @returns dataframe with columns "input", "radiology_labels", and "instruction"
+#
+def filtered_table(df = load_data):
+  df().createOrReplaceTempView("radiology_data")
+  return spark.sql("""
+    SELECT t.input, t.radiology_labels
+      FROM (
+         SELECT t.*, COUNT(*) OVER (PARTITION BY radiology_labels) AS cnt
+         FROM radiology_data t
+      ) t
+      WHERE cnt > 50
+  """).withColumn("instruction", lit('predict radiology label for the clinical notes')) 
+
+# COMMAND ----------
+
+# DBTITLE 1,Save input data to a table
+data = filtered_table()
+data.write.saveAsTable(training_data_tablename)
+data.show()
+
+# COMMAND ----------
+
+# MAGIC %md # Model Training Execution
 
 # COMMAND ----------
 
@@ -250,6 +302,11 @@ trainer.model.save_pretrained(output_dir)
 
 # COMMAND ----------
 
+# MAGIC %md # Optional: Push Model to Hugging Face
+
+# COMMAND ----------
+
+"""
 # Reload model in FP16 and merge it with LoRA weights
 # To merge the model weights in HF, restart compute, run the first 6 cells, and run this cell
 
@@ -267,8 +324,11 @@ model = model.merge_and_unload()
 tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"
+"""
 
 # COMMAND ----------
 
+"""
 model.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
 tokenizer.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1)
+"""
