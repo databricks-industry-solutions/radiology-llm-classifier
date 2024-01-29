@@ -7,10 +7,6 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
-# this is an example change 
-
-# COMMAND ----------
-
 #install libraries
 !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
