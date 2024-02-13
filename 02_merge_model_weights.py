@@ -29,7 +29,7 @@ device_map = {"": 0}
 
 # COMMAND ----------
 
-# MAGIC %md # Option1: Push Model to Hugging Face
+# MAGIC %md # Option1: Push Model and Tokenizer to UC Volume (Recommended)
 
 # COMMAND ----------
 
@@ -42,7 +42,7 @@ val = dbutils.secrets.get(scope="medtron-hf-token", key="token")
 
 # COMMAND ----------
 
-# Reload model in FP16 and merge it with LoRA weights
+# Reload model in FP16 and merge it with QLoRA weights
 base_model = AutoModelForCausalLM.from_pretrained(
     model_name,
     low_cpu_mem_usage=True,
@@ -60,16 +60,16 @@ tokenizer.padding_side = "right"
 
 # COMMAND ----------
 
-#push model and tokemizer to hf
-model.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
-tokenizer.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1)
-
-# COMMAND ----------
-
-# MAGIC %md # Option2: Push Model to UC Volume (Recommended)
-
-# COMMAND ----------
-
 #push model and tokemizer to volume
 model.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
 tokenizer.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+
+# COMMAND ----------
+
+# MAGIC %md # Option2: Push Model and Tokenizer to HuggingFace
+
+# COMMAND ----------
+
+#push model and tokemizer to hf
+model.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
+tokenizer.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1)

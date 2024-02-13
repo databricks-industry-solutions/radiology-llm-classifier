@@ -62,8 +62,8 @@ from accelerate.utils import DistributedType
 # DBTITLE 1,Set training configs
 #PEFT LORA configurations definitions used for multi-gpu
 local_rank = -1
-per_device_train_batch_size = 4
-per_device_eval_batch_size = 4
+per_device_train_batch_size = 15
+per_device_eval_batch_size = 15
 gradient_accumulation_steps = 1
 learning_rate = 2e-4
 model_name = 'epfl-llm/meditron-7b'
@@ -86,9 +86,9 @@ lr_scheduler_type = "cosine" #The cosine lrs function has been shown to perform 
 max_steps = -1 #Number of optimizer update steps
 warmup_ratio = 0.2 #Define training warmup fraction
 group_by_length = True #Group sequences into batches with same length (saves memory and speeds up training considerably)
-save_steps = 800 #Save checkpoint every X updates steps
-logging_steps = 800 #Log every X updates steps
-eval_steps= 800 #Eval steps
+save_steps = 450 #Save checkpoint every X updates steps
+logging_steps = 450 #Log every X updates steps
+eval_steps= 450 #Eval steps
 evaluation_strategy = "steps" #Display val loss for every step
 save_strategy = "steps" 
 output_dir = dbutils.widgets.get("volume_output")
