@@ -36,14 +36,6 @@ from guardrail.client import run_metrics
 
 # COMMAND ----------
 
-val = dbutils.secrets.get(scope="medtron-hf-token", key="token")
-
-# COMMAND ----------
-
-!huggingface-cli login --token $val
-
-# COMMAND ----------
-
 import re
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from mlflow.pyfunc import PythonModel
@@ -131,14 +123,22 @@ class MedtronModelWrapper(PythonModel):
 
 # COMMAND ----------
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+loaded_model = AutoModelForCausalLM.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+loaded_tokenizer = AutoTokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+
+
+# COMMAND ----------
+
 import os
 import mlflow
 from mlflow.models.signature import infer_signature
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Assuming you have a trained LLM model
-medtron_model = AutoModelForCausalLM.from_pretrained("RadiologyLLMs/RadLlama2-7b", use_auth_token=True)
-medtron_tokenizer = AutoTokenizer.from_pretrained("RadiologyLLMs/RadLlama2-7b", use_auth_token=True)
+medtron_model = model.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+medtron_tokenizer = tokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
 snapshot_location = os.path.expanduser("~/.cache/huggingface/model")
 
 # Create an instance of MedtronModelWrapper
