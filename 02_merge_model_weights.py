@@ -1,9 +1,13 @@
 # Databricks notebook source
+dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3")
+
+# COMMAND ----------
+
 #install libraries
 !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
 !pip install pydantic==1.8.2 
-!pip install -q transformers[deepspeed] mpi4py
+dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -20,7 +24,7 @@ model_name = 'epfl-llm/meditron-7b'
 # COMMAND ----------
 
 #model weights
-output_dir = '/Volumes/ang_nara_catalog/rad_llm/results'
+output_dir = dbutils.widgets.get("volume_output")
 
 # COMMAND ----------
 

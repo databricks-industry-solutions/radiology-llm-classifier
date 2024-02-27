@@ -4,14 +4,10 @@
 # COMMAND ----------
 
 # DBTITLE 1,Setup Notebook Parameters
-dbutils.widgets.text("catalog", "hls_healthcare") #catalog, default value hls_healthcare
-dbutils.widgets.text("llm_volume", "hls_dev.radiology_llm") #volume name, default value hls_dev.radiology_llm
-dbutils.widgets.text("volume_output", "/Volumes/hls_healthcare/rad_llm/trained_llm") #why do we need both volume_output and llm_volume? TODO
-dbutils.widgets.text("training_data_tablename", "hls_healthcare.hls_dev.radiology_data_input") 
-
-# COMMAND ----------
-
-#TODO require cluster type === ??? 
+dbutils.widgets.text("catalog", "ang_nara_catalog") #catalog, default value hls_healthcare
+dbutils.widgets.text("llm_volume", "ang_nara_catalog.rad_llm.results_v3") #volume name, default value hls_dev.radiology_llm
+dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3") #why do we need both volume_output and llm_volume? TODO
+dbutils.widgets.text("training_data_tablename", "ang_nara_catalog.rad_llm.delta_rad_filtered") 
 
 # COMMAND ----------
 
@@ -21,28 +17,24 @@ dbutils.widgets.text("training_data_tablename", "hls_healthcare.hls_dev.radiolog
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
 !pip install pydantic==1.8.2 
 !pip install -q transformers[deepspeed] mpi4py
-
-# COMMAND ----------
-
 dbutils.library.restartPython()
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC USE CATALOG ${catalog}
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC CREATE VOLUME IF NOT EXISTS ${volume_output}
+# MAGIC USE CATALOG ${catalog};
+# MAGIC CREATE VOLUME IF NOT EXISTS ${llm_volume};
 
 # COMMAND ----------
 
 # DBTITLE 1,Import libraries 
 #import libraries
 import os
+import json
 import torch
 from datasets import load_dataset
+from pyspark.sql.functions import *
+from pyspark.sql import Row
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -62,8 +54,8 @@ from accelerate.utils import DistributedType
 # DBTITLE 1,Set training configs
 #PEFT LORA configurations definitions used for multi-gpu
 local_rank = -1
-per_device_train_batch_size = 15
-per_device_eval_batch_size = 15
+per_device_train_batch_size = 20
+per_device_eval_batch_size = 20
 gradient_accumulation_steps = 1
 learning_rate = 2e-4
 model_name = 'epfl-llm/meditron-7b'
@@ -86,13 +78,13 @@ lr_scheduler_type = "cosine" #The cosine lrs function has been shown to perform 
 max_steps = -1 #Number of optimizer update steps
 warmup_ratio = 0.2 #Define training warmup fraction
 group_by_length = True #Group sequences into batches with same length (saves memory and speeds up training considerably)
-save_steps = 450 #Save checkpoint every X updates steps
-logging_steps = 450 #Log every X updates steps
-eval_steps= 450 #Eval steps
+save_steps = 500 #Save checkpoint every X updates steps
+logging_steps = 500 #Log every X updates steps
+eval_steps= 500 #Eval steps
 evaluation_strategy = "steps" #Display val loss for every step
 save_strategy = "steps" 
 output_dir = dbutils.widgets.get("volume_output")
-device_map = {"": 0}
+device_map={"":torch.cuda.current_device()}
 training_data_tablename = dbutils.widgets.get("training_data_tablename")
 
 # COMMAND ----------
@@ -102,12 +94,10 @@ training_data_tablename = dbutils.widgets.get("training_data_tablename")
 
 # COMMAND ----------
 
-import os
-from pyspark.sql.functions import *
 #
 # load handwritten notes from csv file in Github repo
 #
-def load_data(path="/data/12k_handwritten_clinical_notes.csv"):
+def load_data(path="/data/42k_handwritten_clinical_notes.csv"):
   return (spark.read.format("csv")
           .option("header",True)
           .load("file:///" + os.getcwd() +  path)
@@ -134,7 +124,7 @@ def filtered_table(df = load_data):
 
 # DBTITLE 1,Save input data to a table
 data = filtered_table()
-data.write.saveAsTable(training_data_tablename)
+data.write.mode("overwrite").saveAsTable(training_data_tablename)
 data.show()
 
 # COMMAND ----------
@@ -211,8 +201,6 @@ df = spark.sql("SELECT * FROM ang_nara_catalog.rad_llm.delta_rad_filtered")
 
 # COMMAND ----------
 
-from pyspark.sql import Row
-
 # Define a schema for the new DataFrame
 schema = ["instruction", "clinical_notes", "radiology_labels"]
 
@@ -227,12 +215,11 @@ df = spark.createDataFrame(row_list, schema=schema)
 
 # COMMAND ----------
 
-import json
 # Convert PySpark DataFrame to a list of dictionaries
 list_of_dicts = df.toJSON().map(lambda x: json.loads(x)).collect()
 
 # Write the list of dictionaries to a JSON file
-output_json_path = "/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json"
+output_json_path = "/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes_v2.json"
 with open(output_json_path, "w") as json_file:
   json.dump(list_of_dicts, json_file)
 
@@ -257,7 +244,7 @@ def template_dataset(sample):
     return sample
 
 #Apply prompt template per sample
-dataset = load_dataset("json", data_files="/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes.json")
+dataset = load_dataset("json", data_files="/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes_v2.json")
 
 # Shuffle the dataset
 dataset_shuffled = dataset.shuffle(seed=42)
@@ -267,7 +254,7 @@ dataset["train"]
 
 #Split dataset into train and val
 train_val = dataset["train"].train_test_split(
-    test_size=2000, shuffle=True, seed=42
+    test_size=8000, shuffle=True, seed=42
 )
 train_data = (
     train_val["train"].map(template_dataset)
@@ -311,54 +298,5 @@ trainer = SFTTrainer(
     args=training_arguments,
     packing=packing,
 )
-
-trainer.train()
-trainer.model.save_pretrained(output_dir)
-
-# COMMAND ----------
-
-# MAGIC %md ## Fine Tune Option 2: Distributed with Deepspeed
-# MAGIC TODO Runtimes
-
-# COMMAND ----------
-
-deepspeed_config = "/Volumes/ang_nara_catalog/rad_llm/clinical_data/deepspeed_config.json"
-
-# COMMAND ----------
-
-training_arguments = TrainingArguments(
-    output_dir="/Volumes/ang_nara_catalog/rad_llm/results",
-    per_device_train_batch_size=per_device_train_batch_size,
-    gradient_accumulation_steps=gradient_accumulation_steps,
-    evaluation_strategy="steps",
-    save_strategy="steps",
-    save_steps=save_steps,
-    eval_steps=eval_steps,
-    logging_steps=logging_steps,
-    learning_rate=learning_rate,
-    fp16=fp16,
-    bf16=bf16,
-    max_grad_norm=max_grad_norm,
-    max_steps=max_steps,
-    warmup_ratio=warmup_ratio,
-    group_by_length=group_by_length,
-    lr_scheduler_type=lr_scheduler_type,
-    ddp_find_unused_parameters=False,
-    deepspeed=deepspeed_config,
-)
-training_arguments.distributed_state.distributed_type = DistributedType.DEEPSPEED
-
-trainer = SFTTrainer(
-    model=model,
-    train_dataset = train_data,
-    eval_dataset = val_data,
-    peft_config=peft_config,
-    dataset_text_field="text",
-    max_seq_length=max_seq_length,
-    tokenizer=tokenizer,
-    args=training_arguments,
-    packing=packing
-)
-
 trainer.train()
 trainer.model.save_pretrained(output_dir)
