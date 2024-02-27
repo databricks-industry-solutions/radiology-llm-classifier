@@ -11,13 +11,13 @@ Radiology examination protocols and labeling are a time consuming administrative
 
 ## Running the Solution
 
+### GPUs for Compute 
+
+Recommend using NVIDIA T4 GPU which are, according to AWS, ‘optimized for machine learning inference and small scale training’. Fine tuning exercise completed on AWS with 2-8 autoscaling workers of type g5.24xlarge GPUs.
+
 ### Sample Dataset
 
 Sample data provided in the repo from... TODO
-
-### GPUs Compute 
-
-Recommend using cluster & size... TODO
 
 ### Fine Tuning the Model
 
