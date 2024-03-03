@@ -1,5 +1,6 @@
 # Databricks notebook source
 dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3")
+dbutils.widgets.text("model_name", "epfl-llm/meditron-7b") 
 
 # COMMAND ----------
 
@@ -19,7 +20,7 @@ from peft import PeftConfig, PeftModel
 # COMMAND ----------
 
 #base model
-model_name = 'epfl-llm/meditron-7b'
+model_name = dbutils.widgets.get("model_name")
 
 # COMMAND ----------
 
@@ -75,5 +76,5 @@ tokenizer.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
 # COMMAND ----------
 
 #push model and tokemizer to hf
-model.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
-tokenizer.push_to_hub("RadiologyLLMs/RadLlama2-7b", use_auth_token=True, create_pr=1)
+model.push_to_hub("RadiologyLLMs/RadMistral-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
+tokenizer.push_to_hub("RadiologyLLMs/RadMistral-7b", use_auth_token=True, create_pr=1)

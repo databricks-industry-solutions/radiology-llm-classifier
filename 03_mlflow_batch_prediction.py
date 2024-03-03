@@ -1,11 +1,10 @@
 # Databricks notebook source
-#model_version
 dbutils.widgets.text("model_version", "1")
+dbutils.widgets.text("pred_table", "ang_nara_catalog.rad_llm.batch_pred_res")
 
 # COMMAND ----------
 
 #install libraries
-!pip install mlflow --upgrade
 !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7 guardrail-ml==0.0.12
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
 !pip install pydantic==1.8.2 
@@ -38,9 +37,9 @@ from mlflow.transformers import generate_signature_output
 
 # COMMAND ----------
 
-class MeditronModelWrapper(PythonModel):
+class LLMModelWrapper(PythonModel):
     """
-    Wrapper class for a Meditron Language Model with MLflow integration.
+    Wrapper class for LLM with MLflow integration.
 
     Parameters:
     - model: Fine-tuned language model for text generation.
@@ -168,15 +167,15 @@ loaded_tokenizer = AutoTokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_
 # COMMAND ----------
 
 # Assuming you have a trained LLM model
-meditron_model = loaded_model.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
-meditron_tokenizer = loaded_tokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+llm_model = loaded_model.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+llm_tokenizer = loaded_tokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
 snapshot_location = os.path.expanduser("~/.cache/huggingface/model")
 
-# Create an instance of MeditronModelWrapper
-meditron_model_wrapper = MeditronModelWrapper(meditron_model, meditron_tokenizer, snapshot_location)
+# Create an instance of LLMModelWrapper
+llm_model_wrapper = LLMModelWrapper(llm_model, llm_tokenizer, snapshot_location)
 
-# Save the meditron model and tokenizer as artifacts
-meditron_model_wrapper.save()
+# Save the llm model and tokenizer as artifacts
+llm_model_wrapper.save()
 
 input_example = 'Notes: rule out renal recurrence  History: Renal cell carcinoma, sp partial nephrectomy'
 
@@ -184,7 +183,7 @@ input_example = 'Notes: rule out renal recurrence  History: Renal cell carcinoma
 with mlflow.start_run():
     mlflow.pyfunc.log_model(
         "rad-meditron7b",
-        python_model=meditron_model_wrapper,
+        python_model=llm_model_wrapper,
         artifacts={'model_path': snapshot_location, 'tokenizer_path': snapshot_location},
         extra_pip_requirements=[
             "accelerate==0.21.0",
@@ -214,7 +213,7 @@ with mlflow.start_run():
 # You can update the catalog and schema name containing the model in Unity Catalog if needed
 CATALOG_NAME = "ang_nara_catalog"
 SCHEMA_NAME = "rad_llm"
-MODEL_NAME = f"{CATALOG_NAME}.{SCHEMA_NAME}.rad-meditron7b"
+MODEL_NAME = f"{CATALOG_NAME}.{SCHEMA_NAME}.rad-meditron"
 
 # COMMAND ----------
 
@@ -276,24 +275,4 @@ display(result_df)
 # COMMAND ----------
 
 spark_batch_df = spark.createDataFrame(result_df)
-spark_batch_df.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable("ang_nara_catalog.rad_llm.batch_pred_res")
-
-# COMMAND ----------
-
-# import mlflow
-# from  mlflow.metrics.genai import *
-# import pandas as pd
-
-# with mlflow.start_run() as run:
-#     results = mlflow.evaluate(
-#        "models:/{model_name}@medtron-v13".format(model_name=MODEL_NAME),
-#         data=result_df,
-#         targets="ground_truth",
-#         predictions="predictions",
-#         extra_metrics=[mlflow.metrics.exact_match()],
-#         evaluators="default",
-#     )
-#     print(f"See aggregated evaluation results below: \n{results.metrics}")
-
-#     eval_table = results.tables["eval_results_table"]
-#     print(f"See evaluation table below: \n{eval_table}")
+spark_batch_df.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(pred_table)

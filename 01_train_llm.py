@@ -7,7 +7,8 @@
 dbutils.widgets.text("catalog", "ang_nara_catalog") #catalog, default value hls_healthcare
 dbutils.widgets.text("llm_volume", "ang_nara_catalog.rad_llm.results_v3") #volume name, default value hls_dev.radiology_llm
 dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3") #why do we need both volume_output and llm_volume? TODO
-dbutils.widgets.text("training_data_tablename", "ang_nara_catalog.rad_llm.delta_rad_filtered") 
+dbutils.widgets.text("training_data_tablename", "ang_nara_catalog.rad_llm.delta_rad_filtered")
+dbutils.widgets.text("model_name", "epfl-llm/meditron-7b") 
 
 # COMMAND ----------
 
@@ -58,7 +59,7 @@ per_device_train_batch_size = 20
 per_device_eval_batch_size = 20
 gradient_accumulation_steps = 1
 learning_rate = 2e-4
-model_name = 'epfl-llm/meditron-7b'
+model_name = dbutils.widgets.get("model_name")
 max_grad_norm = 0.3 
 weight_decay = 0.001
 lora_alpha = 16
