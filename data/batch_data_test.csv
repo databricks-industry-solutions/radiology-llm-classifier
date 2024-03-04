@@ -1,0 +1,201 @@
+,clinical_notes,ground_truth
+0,Notes: sob  History: sob,Pulmonary Embolus
+1,"Notes: 60M degenerative disc disease, progressive stiffness. History: Gradual onset of lumbar pain and reduced flexibility over the past year.",L-Spine
+2,"Notes: 60 y/o male with urothelial cancer, evaluate for recurrence, CT urogram, 3D reconstruction, delayed views History: urothelial cancer",CT Urography
+3,Notes: PE?  History: Pleuritic CP with SOB,Pulmonary Embolus
+4,"Notes: evaluate for stones, or pathology- etiolgy for gross hematuria  History: hx of prostate cancer sp prostatectomy and radiation therapy, gross hematuria",CT Urography
+5,"Notes: r/o PE, eval for pulm edema/pleural effusions as able  History: sudden onset SOB, elevated d dimer",Pulmonary Embolus
+6,"Notes: microscopic hematuria, also with newly diagnosed endometrial cancer, r/o paraaortic lymphadenopathy  History: n/A",CT Urography
+7,Notes: R/O Pulmonary embolism  History: see above,Pulmonary Embolus
+8,Notes: Hx of aneuyrsm rupture  History: Hx of aneuyrsm rupture,CTA Brain
+9,"Notes: History of insulinoma in a 50-year-old male, presenting with hypoglycemic episodes and episodes of confusion.",CT Pancreas
+10,"Notes: history of sinusitis, after Rx, dns, right neck mass.  History: right neck mass, weight loss",Maxillofacial
+11,"Notes: ich, intracranial stenosis?  History: dizzness",CTA Brain
+12,"Notes: baseline CT, s/p cystectomy for bladder CA. Need CT chest and CT abdomen/Pelvis and Urogram for clinical trial.  History: none",CT Urography
+13,"Notes: hereditary hemorrhagic telangiectasia, susicious vascular loop seen on MRA, please evaluate to rule out aneurysm  History: rule out aneurysm",CTA Brain
+14,"Notes: cervicofacial Lymphovenous malformation s/p debulking, plan for mandibular bone grafting  History: facial LVM",Maxillofacial
+15,"Notes: eval for PE  History: tachycardia, shortness of breath",Pulmonary Embolus
+16,"Notes: pe  History: adhf, tachycardic",Pulmonary Embolus
+17,Notes: Patient with metastatic urothelial carcinoman on a clinical trial please assess for disease progression and provide bi dimensional measurements per RECIST 1.1  History: as above,CT Urography
+18,"Notes: acute PE  History: Bilateral DVT (acute), tachypnea, trachycardia, O2 requirement",Pulmonary Embolus
+19,Notes: Evaluate for PE.  History: Dyspnea.,Pulmonary Embolus
+20,"Notes: 54yo female with vulvar cancer and postop with persistent tachycardia and tachypnea, assess for pulmonary embolistm  History: tachycardia, tachypnea, high white count, low platelets",Pulmonary Embolus
+21,Notes: rule out renal recurrence or metastasis  History: hx of renal cell carcinoma sp partial nephrectomy,CT Dedicated Kidney
+22,Notes: Evaluate for facial fracture.  History: s/p assault to face.,Maxillofacial
+23,Notes: evaluate for relation of left hyopharyngeal mass to left carotid arterial system  History: evaluate for relation of left hyopharyngeal mass to left carotid arterial system,CTA Brain
+24,"Notes: Hx of dug abuse, rt lower extremity wound and swelling in leg, now with chest pain and SOB, desaturating to 88% on RA  History: SOB and chest pain , R/o PE",Pulmonary Embolus
+25,"Notes: assess for aneurysm, occlusion, stenosis  History: sudden onset headache, diplopia",CTA Brain
+26,Notes: r/o PE  History: pleuritic chest pain,Pulmonary Embolus
+27,"Notes: history of sinusitis, after Rx, dns, right neck mass.  History: right neck mass, weight loss",Maxillofacial
+28,"Notes: 54yo female with vulvar cancer and postop with persistent tachycardia and tachypnea, assess for pulmonary embolistm  History: tachycardia, tachypnea, high white count, low platelets",Pulmonary Embolus
+29,Notes: eval for basilar skull fracture  History: fall,Temporal Bones
+30,"Notes: rule out renal recurrence  History: Renal cell carcinoma, sp partial nephrectomy",CT Dedicated Kidney
+31,Notes: HCC screening  History: ETOH cirrhoiss,CT Dedicated Liver
+32,"Notes: pe  History: adhf, tachycardic",Pulmonary Embolus
+33,"Notes: hx of bladder cancer, evaluate for metastatic disease with delayed imaging, CT urogram  History: see above",CT Urography
+34,"Notes: Evaluate for acute or chronic PE  History: LUL asymmetric edema-like opacity seen on CXR, VT storm",Pulmonary Embolus
+35,Notes: eval for pe  History: left chest pain,Pulmonary Embolus
+36,Notes: r/o PE  History: r/o PE,Pulmonary Embolus
+37,Notes: hereditary hemorrhagic telangiectasia with history of coil embolization of pulmonary AVM 2013 at Northwestern  History: surveillance imaging,Pulmonary Embolus
+38,"Notes: r/o pe  History: tachy, SOB, CA hx",Pulmonary Embolus
+39,"Notes: 63 yo F with decompensated cirrhosis 2/2 PBC being evaluated for transplant found to have extensive dental disease on panorex needing CT, eval for dental abscess  History: dental disease on panorex",Maxillofacial
+40,Notes: Hx of HHT and pulmonary AVM with coiling/Successful embolization of a branch artery supplying an arteriovenous malformation  History: follow up imaging s/p pulmonary embolization in October 2016,Pulmonary Embolus
+41,Notes: evaluate thoracic fusion hardware  History: spine met s/p posterior fusion and partial resection,T-Spine
+42,Notes: Hx of PNET of pancreatic head History: Hx of PNET of pancreatic head,CT Pancreas
+43,Notes: hx urothelial carcinoma  History: see above,CT Urography
+44,"Notes: tachypnea, tachycardia, r/o PE  History: tachypnea, tachycardia, r/o PE",Pulmonary Embolus
+45,"Notes: PE  History: history of PE, pain in LLE",Pulmonary Embolus
+46,"Notes: 50-year-old female complains of asymmetry in facial appearance, leading to a study to assess for any underlying structural abnormalities.",Maxillofacial
+47,Notes: Left adrenal mass. Assess stability  History: Left adrenal mass. Assess stability,CT Adrenal
+48,"Notes: follow up angio,  History: s/p angio",CTA Brain
+49,"Notes: s/p cystectomy ileal conduit in 4/2015 for bladder cancer . f/u CT, metsatses ?  History: none",CT Urography
+50,Notes: R jaw fracture  History: pain tenderness s/p altercation,Maxillofacial
+51,"Notes: evaluate for PE, eval for pulmonary hemorrhage  History: hemoptysis, hematemesis, hypoxia",Pulmonary Embolus
+52,"Notes: 45F with recurrent headaches, history of glioblastoma multiforme, assessing for disease recurrence.",CTA Brain
+53,Notes: r/o PE  History: TACHYCARDIA,Pulmonary Embolus
+54,Notes: 69F with bladder CA s/p cystectom/IC; on surveillance  History: none,CT Urography
+55,Notes: eval anatomy - s/p previous lumbar surgery  History: see above,L-Spine
+56,Notes: Persistent back back pain s/p kyphoplasty  History: Acute back pain,L-Spine
+57,Notes: evaluate for PE  History: hyoxic and had syncopal episode,Pulmonary Embolus
+58,"Notes: Evaluate for PE vs. SVC syndrome  History: Pt with hx metastatic colon ca on chemo here with 1 day facial swelling, neck swelling, SOB and pre-syncope.",Pulmonary Embolus
+59,Notes: h/o hematuria c/o flank pain (Ct urogram - delaye dimaging)  History: see above,CT Urography
+60,Notes: Source for subarachnoid hemorrhage in L frontal region?  History: Subarachnoid hemorrhage of unknown origin,CTA Brain
+61,"Notes: diverticular disease, CT with and without  History: rectal bleeding, hematuria, CT urography, IV contrast only",CT Urography
+62,"Notes: 55M motor vehicle accident, lower back pain. History: Trauma-related pain with limited mobility.",L-Spine
+63,"Notes: 70M diabetic, transient ischemic attack; History: Diabetes, recent TIA symptoms.",CTA Brain
+64,"Notes: 48F status post-pancreaticoduodenectomy, under surveillance for complications and tumor recurrence. History: None.",CT Pancreas
+65,Notes: Evaluate thoracic spine for pre-op. Mazor Robot protocol. will need pillows and blankets to allow supine position.  History: history of ankylosing spondylitis,T-Spine
+66,"Notes: History of urothelial carcinoma in a 50-year-old male, now presenting with new-onset hematuria and flank pain",CT Urography
+67,"Notes: cardiopulmonary abnormalities? PE?  History: SOB, new oxygen requirement",Pulmonary Embolus
+68,"Notes: dental abscess eval, syncope eval  History: syncopal episode, recent dental surgery",Maxillofacial
+69,"Notes: low back pain. hx squamous cell ca lung, hx lumbar spine surgery  History: low back pain",L-Spine
+70,"Notes: 28M persistent lumbar stiffness, history of sports injury, intermittent discomfort heightened during physical activities.",L-Spine
+71,"Notes: chest pain, sob, tachy, hx of sarcoma, eval for PE  History: chest pain, sob, tachy, hx of sarcoma, eval for PE",Pulmonary Embolus
+72,Notes: patient with history of urothelial carcinoma on a clinical trial please assess for disease reccurrence  History: as above,CT Urography
+73,Notes: 72M diagnosed with adrenal incidentaloma during workup for unexplained weight loss and fatigue,CT Adrenal
+74,"Notes: eval for fx, sp fall, severe midline t spine pain  History: as above",T-Spine
+75,Notes: Concern for orbital involvement s/p fall  History: Trauma patient s/p fall from 4-5 feet height,Maxillofacial
+76,Notes: CT urogram for bladder cancer surveillance  History: Bladder cancer surveillance,CT Urography
+77,"Notes: Chest pain, SOB  History: Chest pain SOB",Pulmonary Embolus
+78,Notes: R/O PE  History: C/o chest tightness and sob,Pulmonary Embolus
+79,"Notes: hearing loss, right conductive hearing loss, hx of radiation for sinus tumor  History: hearing loss, right conductive hearing loss, hx of radiation for sinus tumor",Temporal Bones
+80,"Notes: 20M with bladder extrophy with hx of urolithiasis, please perform Low Dose CT for kidney and bladder stone surveillance  History: none",Renal Stone Protocol
+81,"Notes: hereditary hemorrhagic telangiectasia, susicious vascular loop seen on MRA, please evaluate to rule out aneurysm  History: rule out aneurysm",CTA Brain
+82,"Notes: 28M persistent lumbar stiffness, history of sports injury, intermittent discomfort heightened during physical activities.",L-Spine
+83,Notes: preop planning. please perform CT L spine with MAZOR protocol  History: see above,L-Spine
+84,"Notes: hx of bladder cancer, evaluate for metastatic disease with delayed imaging, CT urogram  History: see above",CT Urography
+85,Notes: r/o PE  History: pleuritic chest pain,Pulmonary Embolus
+86,Notes: Patient with metastatic Urothelial carcinoma on a clinical trial please assess for disease progression and provide bi dimensional measurements per RECIST 1.1  History: as above,CT Urography
+87,"Notes: rule out renal recurrence History: Renal cell carcinoma, sp partial nephrectomy.",CT Dedicated Kidney
+88,"Notes: eval facial, orbital wall fx  History: L supraorbital ttp s/p mvc, 4cm forehead lac",Maxillofacial
+89,Notes: 62F with high risk non-muscle invasive bladder cancer s/p BCG on surveillance history of liver lesions and obturator LN.  History: none,CT Urography
+90,"Notes: 42-year-old male with chronic upper back pain, exacerbated by prolonged sitting and relieved by standing, seeking imaging to explore underlying causes.",T-Spine
+91,Notes: Persistent back back pain s/p kyphoplasty  History: Acute back pain,L-Spine
+92,"Notes: 17yoM with cystic fibrosis, hx of Pseudomonas and atypical Mycobateria, admitted for exacerbation. Please obtain hi-resolution CT  History: cystic fibrosis",Chest
+93,"Notes: 28-year-old female presenting with ear pain and tinnitus, requesting investigation after recent trauma to the head.",Temporal Bones
+94,"Notes: evaluate for renal mass recurrence  History: hx of renal cell carcinoma, sp partial nephrectomy",CT Dedicated Kidney
+95,"Notes: eval for PE, also eval mediastinum  History: cardiac arrest, wheezing,",Pulmonary Embolus
+96,Notes: 80 y/o lady w/ a hx of NSCLC w/ p/w lower back pain in sacral/pelvis area  History: 80 y/o lady w/ a hx of NSCLC w/ p/w lower back pain in sacral/pelvis area,L-Spine
+97,"Notes: 55F fall at home, neck stiffness History: Accidental fall, experiencing neck stiffness and seeking assessment for potential cervical spine injury.",C-Spine(Bone)
+98,Notes: 57 yo with cirrhosis s/p TIPS needs HCC screening  History: none,CT Dedicated Liver
+99,"Notes: hx of brain surgery, p/w vague complaints, neurogenic edema on OSH CT  History: hx of brain surgery, p/w vague complaints, neurogenic edema on OSH CT",CTA Brain
+100,"Notes: h/o left renal lesion, h/o prostate cancer  History: above",CT Dedicated Kidney
+101,"Notes: 45F motor vehicle accident, neck pain History: Traumatic injury, seeking evaluation for potential cervical spine damage.",C-Spine
+102,"Notes: Eval for PE in pt with lung cancer, sinus tachy, hypoxia, sob  History: Eval for PE in pt with lung cancer, sinus tachy, hypoxia, sob",Pulmonary Embolus
+103,Notes: r/o abscess/infection  History: same,L-Spine
+104,Notes: eval for mic hematuria  History: none,CT Urography
+105,"Notes: r/o PE  History: sudden SOB, hypoxia",Pulmonary Embolus
+106,Notes: 46-year-old female with history of hepatocellular carcinoma post chemo - please eval for response  History: see above,CT Dedicated Liver
+107,Notes: Synovial sarcoma with recurrent pulmonary metastases on therapy;  assess for  further response to therapy  History: =,Chest
+108,Notes: Eval for PE  History: CP,Pulmonary Embolus
+109,Notes: Pt with epistaxis. Please evaluate for any aberrant vasculature or aneurysms.  History: epistaxis,CTA Brain
+110,Notes: eval for anatomic abnormality causing recurrent UTI  History: male with UTI x2,CT Urography
+111,Notes: evaluate renal bosniak cyst  History: above,CT Dedicated Kidney
+112,Notes: eval for hydrocephalous and for bleed  History: s/p angio,CTA Brain
+113,Notes: Recurrent Hematuria  History: see above,CT Urography
+114,"Notes: pleuritic cp/sob, with elevated ddimer  History: as above",Pulmonary Embolus
+115,"Notes: eval for PE  History: short of breath, tachycardia",Pulmonary Embolus
+116,"Notes: microscopic hematuria, please evaluate  History: microscopic hematuria",CT Urography
+117,Notes: 45M with a history of chronic pancreatitis and a pancreatic tail mass consistent with a neuroendocrine tumor (NET),CT Pancreas
+118,Notes: assess for pathology  History: hearing loss,Temporal Bones
+119,"Notes: 60F with progressive memory loss, history of Alzheimers disease, investigating for potential cerebral vascular changes.",CTA Brain
+120,Notes: History of a left adrenal mass in a 40-year-old female. Currently assessing for stability based on clinical data.,CT Adrenal
+121,Notes: s/p R orbital floor fracture repair  History: --,Maxillofacial
+122,"Notes: Eval for PE  History: Metatstatic lung CA, acute onset SOB, severe DOE but not hypoxic, R chest pain",Pulmonary Embolus
+123,Notes: 75M s/p cystectomy for bladder CA. Please assess for recurrent/metastatic disease  History: bladder CA,CT Urography
+124,"Notes: 2.5 cm hepatocellular carcinoma, s/p TARE 6/13/18  History: cirrhosis",CT Dedicated Liver
+125,"Notes: 68M resected pancreatic ca, surveillance  History: Surveillance",CT Pancreas
+126,Notes: rule out PE and mets  History: as above,Pulmonary Embolus
+127,"Notes: history of bladder cancer, now positive cytology , negative cytoscopy.  History: none",CT Urography
+128,Notes: history of hearing loss  History: history of hearing loss,Temporal Bones
+129,"Notes: 45-year-old male with recurrent vertigo and hearing loss, seeking evaluation due to a history of chronic ear infections.",Temporal Bones
+130,Notes: Source for subarachnoid hemorrhage in L frontal region?  History: Subarachnoid hemorrhage of unknown origin,CTA Brain
+131,"Notes: 55F episodic lower back pain, history of osteoporosis, exacerbation noted after prolonged standing",L-Spine
+132,Notes: s/p revision orthognathic surgey  History: see ablve,Maxillofacial
+133,"Notes: chest pain, hx PE  History: .",Pulmonary Embolus
+134,Notes: 42-year-old male with a history of biliary tract obstruction and previous hepatic surgery - assess for recurrence or complications,CT Dedicated Liver
+135,Notes: dyspnea on exertion  History: dyspnea on exertion,Pulmonary Embolus
+136,"Notes: 50F recent lumbar strain, acute onset pain. History: Sudden onset of lower back pain after lifting heavy objects.",L-Spine
+137,Notes: Stroke rule out  History: As above,CTA Brain
+138,"Notes: assess for PE  History: Cardiac arrest, R HF",Pulmonary Embolus
+139,Notes: gross hematuria  History: gross hematuria,CT Urography
+140,"Notes: eval bony alignment  History: lumbar stenosis, back and leg pain",L-Spine
+141,Notes: r/o PE  History: cardiac arrest,Pulmonary Embolus
+142,Notes: chronic eustachian tube dysfunction and serous effusion  History: chronic eustachian tube dysfunction and serous effusion,Temporal Bones
+143,"Notes: 28F with a recent onset of abdominal discomfort, no significant medical history, seeking assessmen",CT Abdomen
+144,Notes: pulmonary embolism?  History: shortness of breath,Pulmonary Embolus
+145,Notes: 46-year-old female with history of hepatocellular carcinoma post chemo - please eval for response History: see above,CT Dedicated Liver
+146,"Notes: 50F tingling in fingers, recent whiplash injury History: Recent whiplash injury with associated tingling in fingers, prompting investigation for potential cervical spine involvement.",C-Spine(Bone)
+147,Notes: fusion status  History: s/p fusion with pain,L-Spine
+148,Notes: dental abscess?  History: recent dental surgery,Maxillofacial
+149,Notes: r/o PE  History: pleuritic chest pain,Pulmonary Embolus
+150,Notes: Hisatory AVM evaluate for pulmonary AVM  History: stroke previous pulmonary AVM,Pulmonary Embolus
+151,Notes: hx aneurysm.   follow up 1 year for changes  History: none- surveillance,CTA Brain
+152,Notes: is there PE? Is there acute chest?  History: sepsis w/ tachycardia,Pulmonary Embolus
+153,"Notes: 70F with new-onset speech difficulties, history of cerebral aneurysm repair, assessing for potential vascular complications.",CTA Brain
+154,Notes: Hx of PNET of pancreatic head  History: Hx of PNET of pancreatic head,CT Pancreas
+155,Notes: jaw fracture/dislocation  History: jaw pain,Maxillofacial
+156,"Notes: PE  History: SOB, h/o PE subtherapeutic coumadin level",Pulmonary Embolus
+157,Notes: eval for basilar skull fracture  History: fall,Temporal Bones
+158,"Notes: H/o PNET tumor, excised, assess for recurrence.  History: H/o PNET tumor, excised, assess for recurrence.",CT Pancreas
+159,Notes: fusion status  History: s/p fusion,L-Spine
+160,"Notes: Onset of right sided chest pain while asleep, radiating to RUE. Known history of atrial fibrillation s/p left atrial appendage ligation. Please evaluate for PE, other processses that might cause/contribute to chest pain.  History: As above",Pulmonary Embolus
+161,"Notes: 45M w/ ESRD and new bloody penile discharge, please eval for possible malignancy in GU tract  History: Blood penile discharge",CT Urography
+162,"Notes: 95F w acute onset lower back pain x2 weeks, possible mult compression fx seen on XR, eval for fx  History: as above",L-Spine
+163,"Notes: eval bony irregularity, fracture, mets  History: new presentation suspected spinal stenosis",L-Spine
+164,Notes: eval for PE  History: DVT in legs,Pulmonary Embolus
+165,"Notes: hx of bladder cancer, evaluate for metastatic disease with delayed imaging, CT urogram  History: see above",CT Urography
+166,"Notes: bradycardia, reuqiring pressor. Concern for PE  History: as above",Pulmonary Embolus
+167,"Notes: 50-year-old female complains of asymmetry in facial appearance, leading to a study to assess for any underlying structural abnormalities.",Maxillofacial
+168,Notes: eval for PE  History: tachycardia,Pulmonary Embolus
+169,"Notes: assess for PE  History: Cardiac arrest, R HF",Pulmonary Embolus
+170,"Notes: 32M fell from ladder, neck pain after impact, history of recent home repairs, seeking assessment for potential cervical injury",C-Spine
+171,Notes: PE  History: SOB,Pulmonary Embolus
+172,"Notes: assess liver lesion seen on previous ct  History: Hx of HCV, cirrhosis",CT Dedicated Liver
+173,"Notes: assess for PE  History: Cardiac arrest, R HF",Pulmonary Embolus
+174,Notes: r/o PE  History: O2 desaturation,Pulmonary Embolus
+175,Notes: eval for PE  History: new hypoxia,Pulmonary Embolus
+176,"Notes: pe?  History: left facial swelling, new permacath placed, prior history of upper extremity DVT with dialysis catheter",Pulmonary Embolus
+177,"Notes: 35F tachypnea, investigate for PE. History: Recent pelvic surgery for ovarian cyst",Pulmonary Embolus
+178,Notes: R/O Pulmonary embolism  History: see above,Pulmonary Embolus
+179,Notes: rule out pe  History: as above,Pulmonary Embolus
+180,"Notes: evaluate liver lesions, masses, HCC, possible thrombus, aberrant anatomy, ascites  History: HCC, S/P TARE",CT Dedicated Liver
+181,"Notes: Fall, face trauma  History: above",Maxillofacial
+182,Notes: microscopic hematuria  History: microscopic hematuria,CT Urography
+183,"Notes: eval for fracture, signs of ocular entrapment  History: pain and swelling of L eye s/p punch to face",Maxillofacial
+184,Notes: history of T lymphoblastic lyphoma on therapy  History: disease status evaluation,Chest
+185,Notes: evaluate temporal bones  History: Right ear fullness and sound sensitivity,Temporal Bones
+186,Notes: 83M with gross hematuria; CT UROGRAM PROTOCOL  History: gross hematuria,CT Urography
+187,"Notes: hx of bladder cancer, evaluate for metastatic disease with delayed imaging, CT urogram  History: see above",CT Urography
+188,Notes: bladder cancer  History: bladder cancer,CT Urography
+189,Notes: 79M hx NMIBC s/p BCG who returns with positive urine cytology and negative TURBT  History: Evaluate upper tracts for malignancy. CT urogram,CT Urography
+190,"Notes: Hypoxia, increased oxygen requirement, concern for PE in setting of immobility and malignancy (high risk)  History: hypoxia",Pulmonary Embolus
+191,Notes: PE as cause of patient's hypoxemia and pleuritic chest pain  History: see above,Pulmonary Embolus
+192,"Notes: 32F recurrent sciatica, lumbar spine evaluation. History: Episodes of radiating leg pain with no relief from conservative measures.",L-Spine
+193,"Notes: evaluate for PE  History: New onset SOB, new O2 req, tachycardic, syncope",Pulmonary Embolus
+194,Notes: eval for hydrocephalous and for bleed  History: s/p angio,CTA Brain
+195,"Notes: preop eval for Lumbar fusion.  MAZOR Protocol  History: LBP, bilat hip and thigh pain",L-Spine
+196,"Notes: evaluate renal lesions  History: bilateral renal cysts, some complex",CT Dedicated Kidney
+197,"Notes: hx of osteosarcoma, 24mo off therapy  History: none",Chest
+198,"Notes: PE?  History: acute chest pain, previous clots",Pulmonary Embolus
+199,"Notes: vertigo, dizziness, sp Lothrop, also history of fluctuatin hering loss, tinnitus, noise exposure.  History: dizziness",Temporal Bones
