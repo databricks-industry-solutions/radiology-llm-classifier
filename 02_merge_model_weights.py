@@ -1,6 +1,21 @@
 # Databricks notebook source
-dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3")
+dbutils.widgets.text("catalog", "hls_healthcare") 
+dbutils.widgets.text("database", "hls_dev")
+dbutils.widgets.text("volume_storage", "radiology_reslts")
+
 dbutils.widgets.text("model_name", "epfl-llm/meditron-7b") 
+dbutils.widgets.text("hugging-face-token-secret", "medtron-hf-token")
+
+# COMMAND ----------
+
+dbutils.widgets.text("llm_volume", dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    "." + dbutils.widgets.get("volume_storage"))
+
+dbutils.widgets.text("llm_volume_output", "/Volumes/" + 
+                     dbutils.widgets.get("catalog") +
+                     "/" + dbutils.widgets.get("database") +
+                     "/" + dbutils.widgets.get("volume_storage") )
 
 # COMMAND ----------
 
@@ -25,7 +40,7 @@ model_name = dbutils.widgets.get("model_name")
 # COMMAND ----------
 
 #model weights
-output_dir = dbutils.widgets.get("volume_output")
+output_dir = dbutils.widgets.get("llm_volume_output")
 
 # COMMAND ----------
 
@@ -38,11 +53,8 @@ device_map = {"": 0}
 
 # COMMAND ----------
 
-val = dbutils.secrets.get(scope="medtron-hf-token", key="token")
-
-# COMMAND ----------
-
-#TODO replace with secrets and require 
+# DBTITLE 1,Login to Hugging Face
+val = dbutils.secrets.get(scope=dbutils.widgets.get("hugging-face-token-secret"), key="token")
 !huggingface-cli login --token $val
 
 # COMMAND ----------
@@ -66,8 +78,8 @@ tokenizer.padding_side = "right"
 # COMMAND ----------
 
 #push model and tokemizer to volume
-model.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
-tokenizer.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+model.save_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+tokenizer.save_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
 
 # COMMAND ----------
 
@@ -76,5 +88,7 @@ tokenizer.save_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
 # COMMAND ----------
 
 #push model and tokemizer to hf
+"""
 model.push_to_hub("RadiologyLLMs/RadMistral-7b", use_auth_token=True, create_pr=1, max_shard_size='20GB')
 tokenizer.push_to_hub("RadiologyLLMs/RadMistral-7b", use_auth_token=True, create_pr=1)
+"""
