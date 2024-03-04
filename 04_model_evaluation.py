@@ -9,6 +9,10 @@ dbutils.widgets.text("model_version", "1")
 
 # COMMAND ----------
 
+batch_tablename = (dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    ".batch_prediction_result")
+                    
 eval_table = (dbutils.widgets.get("catalog") + 
                     "." + dbutils.widgets.get("database") +
                     ".batch_pred_eval") 
@@ -56,7 +60,7 @@ from sentence_transformers import SentenceTransformer, util
 
 # COMMAND ----------
 
-test_data = spark.table("ang_nara_catalog.rad_llm.batch_pred_res")
+test_data = spark.table(batch_tablename)
 
 # COMMAND ----------
 
