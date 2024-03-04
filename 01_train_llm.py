@@ -4,11 +4,24 @@
 # COMMAND ----------
 
 # DBTITLE 1,Setup Notebook Parameters
-dbutils.widgets.text("catalog", "ang_nara_catalog") #catalog, default value hls_healthcare
-dbutils.widgets.text("llm_volume", "ang_nara_catalog.rad_llm.results_v3") #volume name, default value hls_dev.radiology_llm
-dbutils.widgets.text("volume_output", "/Volumes/ang_nara_catalog/rad_llm/results_v3") #why do we need both volume_output and llm_volume? TODO
-dbutils.widgets.text("training_data_tablename", "ang_nara_catalog.rad_llm.delta_rad_filtered")
+dbutils.widgets.text("catalog", "hls_healthcare") 
+dbutils.widgets.text("database", "hls_dev")
+dbutils.widgets.text("volume_storage", "radiology_reslts")
+
 dbutils.widgets.text("model_name", "epfl-llm/meditron-7b") 
+dbutils.widgets.text("hugging-face-token-secret", "medtron-hf-token")
+
+# COMMAND ----------
+
+dbutils.widgets.text("llm_volume", dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    "." + dbutils.widgets.get("volume_storage"))
+
+dbutils.widgets.text("llm_volume_output", "/Volumes/" + 
+                     dbutils.widgets.get("catalog") +
+                     "/" + dbutils.widgets.get("database") +
+                     "/" + dbutils.widgets.get("volume_storage") )
+
 
 # COMMAND ----------
 
@@ -23,17 +36,18 @@ dbutils.library.restartPython()
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC CREATE CATALOG IF NOT EXISTS ${catalog};
 # MAGIC USE CATALOG ${catalog};
+# MAGIC CREATE DATABASE IF NOT EXISTS ${database};
+# MAGIC USE ${database};
 # MAGIC CREATE VOLUME IF NOT EXISTS ${llm_volume};
 
 # COMMAND ----------
 
 # DBTITLE 1,Import libraries 
 #import libraries
-import os
-import json
-import torch
-from datasets import load_dataset
+import os, json, torch
+from datasets import Dataset, NamedSplit
 from pyspark.sql.functions import *
 from pyspark.sql import Row
 from transformers import (
@@ -84,7 +98,7 @@ logging_steps = 500 #Log every X updates steps
 eval_steps= 500 #Eval steps
 evaluation_strategy = "steps" #Display val loss for every step
 save_strategy = "steps" 
-output_dir = dbutils.widgets.get("volume_output")
+output_dir = dbutils.widgets.get("llm_volume_output")
 device_map={"":torch.cuda.current_device()}
 training_data_tablename = dbutils.widgets.get("training_data_tablename")
 
@@ -124,9 +138,8 @@ def filtered_table(df = load_data):
 # COMMAND ----------
 
 # DBTITLE 1,Save input data to a table
-data = filtered_table()
-data.write.mode("overwrite").saveAsTable(training_data_tablename)
-data.show()
+df = filtered_table()
+df.show()
 
 # COMMAND ----------
 
@@ -185,44 +198,13 @@ def load_model(model_name):
 
 # COMMAND ----------
 
-val = dbutils.secrets.get(scope="medtron-hf-token", key="token")
-
-# COMMAND ----------
-
-#TODO replace with secrets and require 
+val = dbutils.secrets.get(scope=dbutils.widgets.get("hugging-face-token-secret"), key="token")
 !huggingface-cli login --token $val
 
 # COMMAND ----------
 
+#Download model from HF
 model, tokenizer, peft_config = load_model(model_name)
-
-# COMMAND ----------
-
-df = spark.sql("SELECT * FROM ang_nara_catalog.rad_llm.delta_rad_filtered")
-
-# COMMAND ----------
-
-# Define a schema for the new DataFrame
-schema = ["instruction", "clinical_notes", "radiology_labels"]
-
-# Create a list of Row objects using the schema
-row_list = [Row(instruction=row["instruction"],
-                clinical_notes=row["input"],
-                radiology_labels=row["radiology_labels"]) 
-            for row in df.collect()]
-
-# Create a new Spark DataFrame from the list of Rows and schema
-df = spark.createDataFrame(row_list, schema=schema)
-
-# COMMAND ----------
-
-# Convert PySpark DataFrame to a list of dictionaries
-list_of_dicts = df.toJSON().map(lambda x: json.loads(x)).collect()
-
-# Write the list of dictionaries to a JSON file
-output_json_path = "/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes_v2.json"
-with open(output_json_path, "w") as json_file:
-  json.dump(list_of_dicts, json_file)
 
 # COMMAND ----------
 
@@ -231,7 +213,7 @@ def format_rad(sample):
     Function to create dataset as per Llama2 prompt format
     """
     instruction = f"<s>[INST] {sample['instruction']}"
-    context = f"Here's some context: {sample['clinical_notes']}" if len(sample["clinical_notes"]) > 0 else None
+    context = f"Here's some context: {sample['input']}" if len(sample["input"]) > 0 else None
     response = f" [/INST] {sample['radiology_labels']}"
     #Join all the parts together
     prompt = "".join([i for i in [instruction, context, response] if i is not None])
@@ -244,17 +226,14 @@ def template_dataset(sample):
     sample["text"] = f"{format_rad(sample)}{tokenizer.eos_token}"
     return sample
 
-#Apply prompt template per sample
-dataset = load_dataset("json", data_files="/Volumes/ang_nara_catalog/rad_llm/clinical_data/filtered_clinical_notes_v2.json")
-
 # Shuffle the dataset
+dataset = Dataset.from_pandas(df.toPandas())
 dataset_shuffled = dataset.shuffle(seed=42)
-dataset["train"]
 
 # COMMAND ----------
 
 #Split dataset into train and val
-train_val = dataset["train"].train_test_split(
+train_val = dataset.train_test_split(
     test_size=8000, shuffle=True, seed=42
 )
 train_data = (
