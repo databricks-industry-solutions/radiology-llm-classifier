@@ -1,7 +1,24 @@
 # Databricks notebook source
+# MAGIC %md # Notebook Parameters
+
+# COMMAND ----------
+
+dbutils.widgets.text("catalog", "hls_healthcare") 
+dbutils.widgets.text("database", "hls_dev")
 dbutils.widgets.text("model_version", "1")
-dbutils.widgets.text("eval_table", "ang_nara_catalog.rad_llm.batch_pred_eval")
-dbutils.widgets.text("incorrect_pred_table", "ang_nara_catalog.rad_llm.batch_incorrec_pred")
+
+# COMMAND ----------
+
+eval_table = (dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    ".batch_pred_eval") 
+                  
+incorrect_pred_table = (dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    ".batch_incorrec_pred") 
+                  
+model_version = dbutils.widgets.get("model_version")
+MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("database") + ".rad-meditron"
 
 # COMMAND ----------
 
@@ -43,13 +60,6 @@ test_data = spark.table("ang_nara_catalog.rad_llm.batch_pred_res")
 
 # COMMAND ----------
 
-# You can update the catalog and schema name containing the model in Unity Catalog if needed
-CATALOG_NAME = "ang_nara_catalog"
-SCHEMA_NAME = "rad_llm"
-MODEL_NAME = f"{CATALOG_NAME}.{SCHEMA_NAME}.rad-meditron7b"
-
-model_version = dbutils.widgets.get("model_version")
-
 # Load pyfunc model from UC
 mlflow.set_registry_uri("databricks-uc")
 model_uri = "models:/{model_name}/{model_version}".format(model_name=MODEL_NAME, model_version=model_version)
@@ -73,11 +83,6 @@ test_data = test_data.withColumn('semantic_similarity', calculate_similarity(tes
 for c_name, c_type in test_data.dtypes:
     if c_type in ('double', 'float'):
         test_data = test_data.withColumn(c_name, F.round(c_name, 2))
-
-# COMMAND ----------
-
-eval_table = dbutils.widgets.get("eval_table")
-incorrect_pred_table = dbutils.widgets.get("incorrect_pred_table")
 
 # COMMAND ----------
 

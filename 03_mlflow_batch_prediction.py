@@ -23,6 +23,7 @@ llm_volume_output = ( "/Volumes/" +
                      "/" + dbutils.widgets.get("volume_storage") )
 
 MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("database") + ".rad-meditron"
+model_version = dbutils.widgets.get("model_version")
 
 batch_tablename = (dbutils.widgets.get("catalog") + 
                     "." + dbutils.widgets.get("database") +
@@ -233,10 +234,6 @@ with mlflow.start_run():
         model_uri=f"runs:/{run_id}/rad-meditron7b",
         name=MODEL_NAME
     )
-
-# COMMAND ----------
-
-model_version = dbutils.widgets.get("model_version")
 
 # COMMAND ----------
 
