@@ -35,6 +35,7 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
+# DBTITLE 1,Set catalog / database location
 # MAGIC %sql
 # MAGIC CREATE CATALOG IF NOT EXISTS ${catalog};
 # MAGIC USE CATALOG ${catalog};
@@ -137,7 +138,7 @@ def filtered_table(df = load_data):
 
 # COMMAND ----------
 
-# DBTITLE 1,Save input data to a table
+# DBTITLE 1,Show sample training data
 df = filtered_table()
 df.show()
 
@@ -198,16 +199,18 @@ def load_model(model_name):
 
 # COMMAND ----------
 
+# DBTITLE 1,Login to Hugging Face
 val = dbutils.secrets.get(scope=dbutils.widgets.get("hugging-face-token-secret"), key="token")
 !huggingface-cli login --token $val
 
 # COMMAND ----------
 
-#Download model from HF
+#Download model 
 model, tokenizer, peft_config = load_model(model_name)
 
 # COMMAND ----------
 
+# DBTITLE 1,Prompts for training
 def format_rad(sample):
     """
     Function to create dataset as per Llama2 prompt format
