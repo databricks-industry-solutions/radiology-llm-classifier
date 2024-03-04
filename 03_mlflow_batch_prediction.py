@@ -244,9 +244,12 @@ model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
 
-#TODO Aaron
-pd_data = pd.read_csv('/Volumes/ang_nara_catalog/rad_llm/clinical_data/batch_data_test.csv')
+pd_data = pd.read_csv('file:///' + os.getcwd() + '/data/batch_data_test.csv')
 pd_data = pd_data.drop(['Unnamed: 0'], axis=1)
+
+# COMMAND ----------
+
+pd_data
 
 # COMMAND ----------
 
