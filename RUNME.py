@@ -71,9 +71,9 @@ job_json = {
             {
                 "job_cluster_key": "sample_solacc_cluster",
                 "notebook_task": {
-                    "notebook_path": f"00_[PLEASE READ] Contributing to Solution Accelerators"
+                    "notebook_path": f"00_introduction"
                 },
-                "task_key": "sample_solacc_01"
+                "task_key": "empty_readme"
             },
             # {
             #     "job_cluster_key": "sample_solacc_cluster",
