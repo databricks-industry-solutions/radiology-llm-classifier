@@ -11,33 +11,28 @@ Radiology examination protocols and labeling are a time consuming administrative
 
 ## Running the Solution
 
+This solution is designed to run notebooks 01_train_llm... through 04_model_evaluation in numerical order. 
+
 ### GPUs for Compute 
 
-Recommend using NVIDIA T4 GPU which are, according to AWS, ‘optimized for machine learning inference and small scale training’. Fine tuning exercise completed on AWS with 2-8 autoscaling workers of type g5.24xlarge GPUs.
+Recommend using NVIDIA A10G or NVIDIA T4 GPU which are, according to AWS, ‘optimized for machine learning inference and small scale training’. Fine tuning exercise completed on AWS with 2-8 autoscaling workers of type g5.24xlarge GPUs.
 
 ### Sample Dataset
 
-Sample data provided in the repo from... TODO
+Sample datasets in data/ are generated synthetic data from ChatGPT and are for the sole purpose of demonstrating how this pipeline for fine tuning would run in an environment.
 
 ### Fine Tuning the Model
 
-TODO...
+We use a base [model](https://huggingface.co/epfl-llm/meditron-7b) from Hugging Face, [Meditron](https://github.com/epfLLM/meditron), to fine tune from the [data](data/) in this repo. This model is chosen due to its quality in Healthcare having been trained on pubmed data as well as its open source license under Apache2. This model can be easily subbed out for a different model in the notebook AARON TODO
 
-#### Picking a Base Model 
+#### Optimizing tuning Parameters 
 
-TODO...
+The method use QLora allows for... NARA TODO 
 
-#### Optimizing Parameters 
 
-TODO...
+### Notes on Accuracy 
 
-### Batch inferences
-
-TODO... 
-
-### Analyzing Accuracy 
-
-TODO... 
+NARA TODO... 
 
 ## Project support 
 
