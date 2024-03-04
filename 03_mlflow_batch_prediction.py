@@ -1,6 +1,32 @@
 # Databricks notebook source
+# MAGIC %md # Notebook Parameters
+
+# COMMAND ----------
+
+dbutils.widgets.text("catalog", "hls_healthcare") 
+dbutils.widgets.text("database", "hls_dev")
+dbutils.widgets.text("volume_storage", "radiology_reslts")
+
+dbutils.widgets.text("model_name", "epfl-llm/meditron-7b") 
+dbutils.widgets.text("hugging-face-token-secret", "medtron-hf-token")
 dbutils.widgets.text("model_version", "1")
-dbutils.widgets.text("pred_table", "ang_nara_catalog.rad_llm.batch_pred_res")
+
+# COMMAND ----------
+
+llm_volume = (dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    "." + dbutils.widgets.get("volume_storage"))
+
+llm_volume_output = ( "/Volumes/" + 
+                     dbutils.widgets.get("catalog") +
+                     "/" + dbutils.widgets.get("database") +
+                     "/" + dbutils.widgets.get("volume_storage") )
+
+MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("database") + ".rad-meditron"
+
+batch_tablename = (dbutils.widgets.get("catalog") + 
+                    "." + dbutils.widgets.get("database") +
+                    ".batch_prediction_result")
 
 # COMMAND ----------
 
@@ -161,14 +187,14 @@ class LLMModelWrapper(PythonModel):
 
 # COMMAND ----------
 
-loaded_model = AutoModelForCausalLM.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
-loaded_tokenizer = AutoTokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+loaded_model = AutoModelForCausalLM.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+loaded_tokenizer = AutoTokenizer.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
 
 # COMMAND ----------
 
 # Assuming you have a trained LLM model
-llm_model = loaded_model.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
-llm_tokenizer = loaded_tokenizer.from_pretrained("/Volumes/ang_nara_catalog/rad_llm/results/model")
+llm_model = loaded_model.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+llm_tokenizer = loaded_tokenizer.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
 snapshot_location = os.path.expanduser("~/.cache/huggingface/model")
 
 # Create an instance of LLMModelWrapper
@@ -205,15 +231,8 @@ with mlflow.start_run():
     mlflow.set_registry_uri("databricks-uc")
     mlflow.register_model(
         model_uri=f"runs:/{run_id}/rad-meditron7b",
-        name=f"{catalog}.{schema}.{model_name}"
+        name=MODEL_NAME
     )
-
-# COMMAND ----------
-
-# You can update the catalog and schema name containing the model in Unity Catalog if needed
-CATALOG_NAME = "ang_nara_catalog"
-SCHEMA_NAME = "rad_llm"
-MODEL_NAME = f"{CATALOG_NAME}.{SCHEMA_NAME}.rad-meditron"
 
 # COMMAND ----------
 
@@ -229,6 +248,7 @@ model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
 
+#TODO Aaron
 pd_data = pd.read_csv('/Volumes/ang_nara_catalog/rad_llm/clinical_data/batch_data_test.csv')
 pd_data = pd_data.drop(['Unnamed: 0'], axis=1)
 
@@ -275,4 +295,4 @@ display(result_df)
 # COMMAND ----------
 
 spark_batch_df = spark.createDataFrame(result_df)
-spark_batch_df.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(pred_table)
+spark_batch_df.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(batch_tablename)

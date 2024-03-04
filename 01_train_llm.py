@@ -13,11 +13,11 @@ dbutils.widgets.text("hugging-face-token-secret", "medtron-hf-token")
 
 # COMMAND ----------
 
-dbutils.widgets.text("llm_volume", dbutils.widgets.get("catalog") + 
+llm_volume = (dbutils.widgets.get("catalog") + 
                     "." + dbutils.widgets.get("database") +
                     "." + dbutils.widgets.get("volume_storage"))
 
-dbutils.widgets.text("llm_volume_output", "/Volumes/" + 
+llm_volume_output = ( "/Volumes/" + 
                      dbutils.widgets.get("catalog") +
                      "/" + dbutils.widgets.get("database") +
                      "/" + dbutils.widgets.get("volume_storage") )
@@ -99,7 +99,7 @@ logging_steps = 500 #Log every X updates steps
 eval_steps= 500 #Eval steps
 evaluation_strategy = "steps" #Display val loss for every step
 save_strategy = "steps" 
-output_dir = dbutils.widgets.get("llm_volume_output")
+output_dir = llm_volume_output
 device_map={"":torch.cuda.current_device()}
 training_data_tablename = dbutils.widgets.get("training_data_tablename")
 

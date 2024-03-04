@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %md # Notebook Parameters
+
+# COMMAND ----------
+
 dbutils.widgets.text("catalog", "hls_healthcare") 
 dbutils.widgets.text("database", "hls_dev")
 dbutils.widgets.text("volume_storage", "radiology_reslts")
@@ -8,11 +12,11 @@ dbutils.widgets.text("hugging-face-token-secret", "medtron-hf-token")
 
 # COMMAND ----------
 
-dbutils.widgets.text("llm_volume", dbutils.widgets.get("catalog") + 
+llm_volume = (dbutils.widgets.get("catalog") + 
                     "." + dbutils.widgets.get("database") +
                     "." + dbutils.widgets.get("volume_storage"))
 
-dbutils.widgets.text("llm_volume_output", "/Volumes/" + 
+llm_volume_output = ( "/Volumes/" + 
                      dbutils.widgets.get("catalog") +
                      "/" + dbutils.widgets.get("database") +
                      "/" + dbutils.widgets.get("volume_storage") )
