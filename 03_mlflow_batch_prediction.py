@@ -244,6 +244,7 @@ model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
 
+# DBTITLE 1,Load data that has validation results
 pd_data = pd.read_csv('file:///' + os.getcwd() + '/data/batch_data_test.csv')
 pd_data = pd_data.drop(['Unnamed: 0'], axis=1)
 
