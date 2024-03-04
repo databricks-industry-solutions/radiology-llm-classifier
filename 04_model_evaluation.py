@@ -89,3 +89,7 @@ filtered_dataframe = test_data.filter(col("semantic_similarity") < 0.50)
 
 # Write the filtered DataFrame to the Delta table
 filtered_dataframe.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(incorrect_pred_table)
+
+# COMMAND ----------
+
+#TODO add stats / visuals here to easily consume output
