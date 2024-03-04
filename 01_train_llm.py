@@ -31,7 +31,6 @@ llm_volume_output = ( "/Volumes/" +
 !pip install -q unstructured["local-inference"]==0.7.4 pillow
 !pip install pydantic==1.8.2 
 !pip install -q transformers[deepspeed] mpi4py
-dbutils.library.restartPython()
 
 # COMMAND ----------
 

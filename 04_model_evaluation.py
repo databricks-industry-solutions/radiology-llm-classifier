@@ -32,7 +32,6 @@ MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("databas
 !pip install pydantic==1.8.2
 !pip install --upgrade mlflow 
 !pip install sentence-transformers
-dbutils.library.restartPython()
 
 # COMMAND ----------
 
