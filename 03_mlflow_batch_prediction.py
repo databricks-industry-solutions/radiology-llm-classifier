@@ -187,8 +187,8 @@ class LLMModelWrapper(PythonModel):
 
 # COMMAND ----------
 
-loaded_model = AutoModelForCausalLM.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
-loaded_tokenizer = AutoTokenizer.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+loaded_model = AutoModelForCausalLM.from_pretrained(llm_volume_output + "/results/model")
+loaded_tokenizer = AutoTokenizer.from_pretrained(llm_volume_output + "/results/model")
 
 # COMMAND ----------
 

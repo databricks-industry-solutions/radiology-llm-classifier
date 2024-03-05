@@ -81,8 +81,8 @@ tokenizer.padding_side = "right"
 # COMMAND ----------
 
 #push model and tokemizer to volume
-model.save_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
-tokenizer.save_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+model.save_pretrained(llm_volume_output + "/results/model")
+tokenizer.save_pretrained(llm_volume_output + "/results/model")
 
 # COMMAND ----------
 
