@@ -225,9 +225,6 @@ with mlflow.start_run():
         )
     )
     run_id = mlflow.active_run().info.run_id
-    catalog = "ang_nara_catalog"
-    schema = "rad_llm"
-    model_name = "rad-meditron7b"
     mlflow.set_registry_uri("databricks-uc")
     mlflow.register_model(
         model_uri=f"runs:/{run_id}/rad-meditron7b",
