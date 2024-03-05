@@ -193,8 +193,8 @@ loaded_tokenizer = AutoTokenizer.from_pretrained(llm_volume_output + "/results/m
 # COMMAND ----------
 
 # Assuming you have a trained LLM model
-llm_model = loaded_model.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
-llm_tokenizer = loaded_tokenizer.from_pretrained(dbutils.widgets.text("llm_volume_output") + "/results/model")
+llm_model = loaded_model.from_pretrained(llm_volume_output + "/results/model")
+llm_tokenizer = loaded_tokenizer.from_pretrained(llm_volume_output + "/results/model")
 snapshot_location = os.path.expanduser("~/.cache/huggingface/model")
 
 # Create an instance of LLMModelWrapper
