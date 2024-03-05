@@ -236,7 +236,7 @@ with mlflow.start_run():
 # Load pyfunc model from UC
 import mlflow
 mlflow.set_registry_uri("databricks-uc")
-model_uri = "models:/{model_name}/{model_version}".format(model_name=MODEL_NAME, model_version=model_version)
+model_uri = "models:/{MODEL_NAME}/{model_version}".format(model_name=MODEL_NAME, model_version=model_version)
 model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
