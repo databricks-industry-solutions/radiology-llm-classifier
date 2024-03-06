@@ -1,4 +1,5 @@
 # Databricks notebook source
+<<<<<<< Updated upstream
 # MAGIC %md # Notebook Parameters
 
 # COMMAND ----------
@@ -23,6 +24,10 @@ incorrect_pred_table = (dbutils.widgets.get("catalog") +
                   
 model_version = dbutils.widgets.get("model_version")
 MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("database") + ".rad-meditron"
+=======
+dbutils.widgets.text("model_version", "3")
+dbutils.widgets.text("eval_table", "ang_nara_catalog.rad_llm.batch_pred_eval")
+>>>>>>> Stashed changes
 
 # COMMAND ----------
 
@@ -32,6 +37,35 @@ MODEL_NAME = dbutils.widgets.get("catalog") + "." + dbutils.widgets.get("databas
 !pip install pydantic==1.8.2
 !pip install --upgrade mlflow 
 !pip install sentence-transformers
+
+# COMMAND ----------
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, array_intersect, expr
+
+# Example data as PySpark DataFrame
+data = [("CT Urography History", "CT Urography"),
+        ("CT Scan History", "CT Scan"),
+        ("MRI History", "MRI")]
+
+# Create a PySpark DataFrame
+df = spark.createDataFrame(data, ["predictions", "ground_truth"])
+
+# Split the predicitons into words
+df = df.withColumn("predicted_words", expr("split(predictions, ' ')"))
+
+# Find the common words between predictions and ground truth
+df = df.withColumn("common_words", array_intersect(col("predicted_words"), expr("split(ground_truth, ' ')")))
+
+# Join the common words to form the cleaned predictions
+df = df.withColumn("cleaned_predictions", expr("concat_ws(' ', common_words)"))
+
+# Select relevant columns
+result_df = df.select("predictions", "ground_truth", "cleaned_predictions")
+
+# Show the result
+result_df.show(truncate=False)
+
 
 # COMMAND ----------
 
@@ -63,6 +97,7 @@ test_data = spark.table(batch_tablename)
 
 # COMMAND ----------
 
+<<<<<<< Updated upstream
 # Load pyfunc model from UC
 mlflow.set_registry_uri("databricks-uc")
 model_uri = "models:/{MODEL_NAME}/{model_version}".format(model_name=MODEL_NAME, model_version=model_version)
@@ -70,6 +105,8 @@ model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
 
+=======
+>>>>>>> Stashed changes
 # Load pre-trained BERT model
 model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
@@ -89,6 +126,7 @@ for c_name, c_type in test_data.dtypes:
 
 # COMMAND ----------
 
+<<<<<<< Updated upstream
 test_data.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(eval_table)
 
 # COMMAND ----------
@@ -101,3 +139,10 @@ filtered_dataframe.write.format("delta").mode("overwrite").option("mergeSchema",
 # COMMAND ----------
 
 #TODO add stats / visuals here to easily consume output
+=======
+eval_table = dbutils.widgets.get("eval_table")
+
+# COMMAND ----------
+
+test_data.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(eval_table)
+>>>>>>> Stashed changes
