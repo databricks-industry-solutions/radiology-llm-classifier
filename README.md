@@ -27,12 +27,17 @@ We use a base [model](https://huggingface.co/epfl-llm/meditron-7b) from Hugging 
 
 #### Optimizing tuning Parameters 
 
-The method use QLora allows for... NARA TODO 
+LoRA presents an enhanced fine-tuning technique that diverges from the conventional approach of full fine-tuning all weights within the pre-trained large language model's weight matrix. Instead, LoRA fine-tunes two smaller matrices, serving as approximations of the larger matrix. These smaller matrices constitute what is known as the LoRA adapter. Once fine-tuned, this adapter is incorporated into the pre-trained model for inference purposes.
 
+QLoRA represents a refinement of LoRA, prioritizing memory efficiency. It achieves this by further optimizing the weights of the LoRA adapters through quantization, reducing their precision from 8-bit to 4-bit. This reduction significantly diminishes the memory footprint and storage demands. In the QLoRA framework, the pre-trained model is loaded into GPU memory with these quantized 4-bit weights, as opposed to the 8-bit precision utilized in LoRA.
+
+Despite the decrease in bit precision, QLoRA maintains a comparable level of effectiveness to its predecessor, LoRA. 
+
+Through the integration of QLoRA in this repository, we managed to reduce the training duration to approximately 2 hours on a g5.24xlarge driver and worker setup for 30k training samples. Without QLoRA, we anticipate a significantly longer training time, necessitating larger memory-sized driver and worker nodes. By employing QLoRA, we not only minimize the number of GPUs needed but also decrease the memory footprint of the model weights.
 
 ### Notes on Accuracy 
 
-NARA TODO... 
+To assess the precision of our fine-tuned model, we utilized Semantic Similarity Search, which gauges the alignment between the ground truth and predictions on a 0-1 scale within our 200 test batch test dataset. A score of 0 denotes no similarity, while 1 signifies exact correspondence. Our evaluation yielded an impressive average score of 0.86 on the batch test dataset. 
 
 ## Project support 
 
