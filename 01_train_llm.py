@@ -109,10 +109,9 @@ training_data_tablename = dbutils.widgets.get("training_data_tablename")
 
 # COMMAND ----------
 
+#load handwritten notes from csv file in Github repo
 #
-# load handwritten notes from csv file in Github repo
-#
-def load_data(path="/data/42k_handwritten_clinical_notes.csv"):
+def load_data(path="/data/30k_handwritten_clinical_notes.csv"):
   return (spark.read.format("csv")
           .option("header",True)
           .load("file:///" + os.getcwd() +  path)
@@ -147,10 +146,10 @@ df.show()
 
 # COMMAND ----------
 
-# MAGIC %md ## Fine Tune Option 1: Single Node GPU
+# MAGIC %md ## Fine Tuning GPU Options
 # MAGIC Runtimes: 
-# MAGIC   T4 GPU = ~3 hours  
-# MAGIC   A100/V100 GPU = ~1 hour
+# MAGIC T4 GPU (Driver: g4dn.16xlarge, Worker: g4dn.16xlarge) = ~5 hours  
+# MAGIC NVIDIA A10G on G5 GPU (Driver: g5.24xlarge, Worker: g5.24xlarge) = ~2 hours
 
 # COMMAND ----------
 

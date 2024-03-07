@@ -27,6 +27,8 @@ We use a base [model](https://huggingface.co/epfl-llm/meditron-7b) from Hugging 
 
 #### Optimizing tuning Parameters 
 
+![image](https://github.com/databricks-industry-solutions/radiology-llm-classifier/blob/feature-new-model-metrics/images/weights.png?raw=true)
+
 LoRA presents an enhanced fine-tuning technique that diverges from the conventional approach of full fine-tuning all weights within the pre-trained large language model's weight matrix. Instead, LoRA fine-tunes two smaller matrices, serving as approximations of the larger matrix. These smaller matrices constitute what is known as the LoRA adapter. Once fine-tuned, this adapter is incorporated into the pre-trained model for inference purposes.
 
 QLoRA represents a refinement of LoRA, prioritizing memory efficiency. It achieves this by further optimizing the weights of the LoRA adapters through quantization, reducing their precision from 8-bit to 4-bit. This reduction significantly diminishes the memory footprint and storage demands. In the QLoRA framework, the pre-trained model is loaded into GPU memory with these quantized 4-bit weights, as opposed to the 8-bit precision utilized in LoRA.
