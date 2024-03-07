@@ -241,16 +241,34 @@ model =  mlflow.pyfunc.load_model(model_uri)
 
 # COMMAND ----------
 
-# DBTITLE 1,Load data that has validation results
+# MAGIC %md
+# MAGIC ###### - Pandas is generally more suitable for smaller datasets due to its in-memory operations and optimized data structures, allowing for efficient handling of data that fits comfortably within the available RAM. On the other hand, Pandas UDFs (User-Defined Functions) in PySpark are designed for distributed computing on larger datasets, leveraging the parallel processing capabilities of Spark clusters, making them more appropriate for scaling to big data scenarios but potentially introducing overhead for smaller datasets.
+# MAGIC
+# MAGIC ###### - As we have limited test dataset, we are utilizing pandas fucntion. Pandas udf is highly recommended for massive daatset
+
+# COMMAND ----------
+
+# DBTITLE 1,Load data that has validation results using pysaprk
+# data = spark.read.csv('file:///' + os.getcwd() + '/data/batch_data_test.csv', header=True)
+
+# COMMAND ----------
+
+# DBTITLE 1,Pandas UDF for distributed dataset
+# @pandas_udf("string")
+# def predict_udf(v: pd.Series) -> pd.Series:
+#     return pd.Series([model.predict(v_i) for v_i in v], name="predictions"
+# # Apply the UDF to make predictions
+# result_df = data.withColumn("predictions", predict_udf(col("clinical_notes")))
+
+# COMMAND ----------
+
+# DBTITLE 1,Load data that has validation results using pandas
 pd_data = pd.read_csv('file:///' + os.getcwd() + '/data/batch_data_test.csv')
 pd_data = pd_data.drop(['Unnamed: 0'], axis=1)
 
 # COMMAND ----------
 
-pd_data
-
-# COMMAND ----------
-
+# DBTITLE 1,Pandas function for smaller dataset
 def apply_model_to_series(s, loaded_model):
     """
     Apply LLM to a Pandas Series.
