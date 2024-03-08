@@ -39,7 +39,9 @@ Through the integration of QLoRA in this repository, we managed to reduce the tr
 
 ### Notes on Accuracy 
 
-To assess the precision of our fine-tuned model, we utilized Semantic Similarity Search, which gauges the alignment between the ground truth and predictions on a 0-1 scale within our 200 test batch test dataset. A score of 0 denotes no similarity, while 1 signifies exact correspondence. Our evaluation yielded an impressive average score of 0.86 on the batch test dataset. 
+To assess the precision of our fine-tuned model, we utilized Semantic Similarity Search, which gauges the alignment between the ground truth and predictions on a 0-1 scale within our 200 test batch test dataset. A score of 0 denotes no similarity, while 1 signifies exact correspondence. Our evaluation yielded an impressive average score of 0.86 on the batch test dataset.
+
+![image](https://github.com/databricks-industry-solutions/radiology-llm-classifier/blob/feature-new-model-metrics/images/clinical_notes.png?raw=true)
 
 ## Project support 
 
